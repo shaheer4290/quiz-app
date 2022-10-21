@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\QuizQuestion;
+use App\Rules\ValidateQuizQuestions;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class CreateQuizQuestionsRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * The data to be validated should be processed as JSON.
+     *
+     * @return mixed
+     */
+    public function validationData()
+    {
+        return $this->json()->all();
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
+    public function rules()
+    {
+        return [
+            'questions' => ['required', 'array', 'min:1', 'max:10', new ValidateQuizQuestions()],
+            'questions.*.question' => 'required|string',
+            'questions.*.correct_answer' => [
+                'required',
+                Rule::in([QuizQuestion::SINGLE_CORRECT_ANSWER, QuizQuestion::MULTIPLE_CORRECT_ANSWER]),
+            ],
+            // '*.options' => 'required',
+            'questions.*.options' => ['required', 'array', 'min:1', 'max:5'],
+            'questions.*.options.*.option' => 'required|string',
+            'questions.*.options.*.is_correct' => ['required', 'bool'],
+        ];
+    }
+}
