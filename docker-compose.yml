@@ -21,6 +21,7 @@ services:
         links:
             - mysql
             - redis
+            # - mailhog
         volumes:
             - ./src:/src
         working_dir: /src
@@ -71,4 +72,12 @@ services:
             - REDIS_PORT=6379
         ports:
             - 6081:8081
+
+    # mailhog       
+    mailhog:
+        container_name: ${PROJECT_NAME}_mailhog
+        image: mailhog/mailhog
+        ports: 
+            - 1025:1025
+            - 6082:8025
     

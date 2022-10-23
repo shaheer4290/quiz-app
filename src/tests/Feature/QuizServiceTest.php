@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use App\Models\QuizQuestionOption;
+use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class QuizServiceTest extends TestCase
 {
@@ -37,7 +37,7 @@ class QuizServiceTest extends TestCase
                     'slug',
                     'status',
                     'created_by',
-                    'questions'
+                    'questions',
                 ],
             ])
             ->assertJson([
@@ -77,11 +77,11 @@ class QuizServiceTest extends TestCase
         $quiz = Quiz::factory()->create([
             'title' => 'Test Quiz',
             'status' => 'draft',
-            'created_by' => $user->id
+            'created_by' => $user->id,
         ]);
 
         $payload = [
-            'title' => 'Updated Test Quiz'
+            'title' => 'Updated Test Quiz',
         ];
         $response = $this->actingAs($user, 'api')
                          ->withSession(['banned' => false])
@@ -96,7 +96,7 @@ class QuizServiceTest extends TestCase
                     'slug',
                     'status',
                     'created_by',
-                    'questions'
+                    'questions',
                 ],
             ])
             ->assertJsonFragment(['title' => 'Updated Test Quiz']);
@@ -112,11 +112,11 @@ class QuizServiceTest extends TestCase
         $quiz = Quiz::factory()->create([
             'title' => 'Test Quiz',
             'status' => 'published',
-            'created_by' => $user->id
+            'created_by' => $user->id,
         ]);
 
         $payload = [
-            'title' => 'Updated Test Quiz'
+            'title' => 'Updated Test Quiz',
         ];
 
         $response = $this->actingAs($user, 'api')
@@ -144,7 +144,7 @@ class QuizServiceTest extends TestCase
         $quiz = Quiz::factory()->create([
             'title' => 'Test Quiz',
             'status' => 'draft',
-            'created_by' => $user->id
+            'created_by' => $user->id,
         ]);
 
         $response = $this->actingAs($user, 'api')
@@ -173,24 +173,24 @@ class QuizServiceTest extends TestCase
                         ->create([
                             'title' => 'Test Quiz',
                             'status' => 'draft',
-                            'created_by' => $user->id
+                            'created_by' => $user->id,
                         ]);
 
         $quizQuestion = QuizQuestion::factory()
                                     ->create([
-                            'quiz_id' => $quiz->id,
-                        ]);
+                                        'quiz_id' => $quiz->id,
+                                    ]);
 
         $quizQuestionOption = QuizQuestionOption::factory()
                                     ->create([
-                            'question_id' => $quizQuestion->id,
-                            'is_correct' => true
-                        ]);
+                                        'question_id' => $quizQuestion->id,
+                                        'is_correct' => true,
+                                    ]);
 
         $response = $this->actingAs($user, 'api')
                          ->withSession(['banned' => false])
                          ->postJson('/api/quizzes/'.$quiz->slug.'/publish');
-                         
+
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -198,5 +198,4 @@ class QuizServiceTest extends TestCase
                 'message' => 'Quiz successfully published',
             ]);
     }
-
 }

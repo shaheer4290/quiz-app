@@ -27,4 +27,9 @@ class UserRepositoryImpl implements UserRepository
     {
         return Auth::user();
     }
+
+    public function getUsersForEmail($id)
+    {
+        return User::where('id', '!=', $id)->get();
+    }
 }

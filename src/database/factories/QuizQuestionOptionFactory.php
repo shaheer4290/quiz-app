@@ -17,7 +17,7 @@ class QuizQuestionOptionFactory extends Factory
     public function definition()
     {
         return [
-            'option' => fake()->name()
+            'option' => fake()->name(),
         ];
     }
 }

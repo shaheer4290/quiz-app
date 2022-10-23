@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Http\Resources\QuizResource;
+use App\Jobs\SendQuizCreationgEmailJob;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use App\Repositories\QuizQuestionOptionRepository;
 use App\Repositories\QuizQuestionRepository;
 use App\Repositories\QuizRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,11 +21,14 @@ class QuizServiceImpl implements QuizService
 
     private QuizQuestionOptionRepository $quizQuestionOptionRepository;
 
-    public function __construct(QuizRepository $quizRepository, QuizQuestionRepository $quizQuestionRepository, QuizQuestionOptionRepository $quizQuestionOptionRepository)
+    private UserRepository $userRepository;
+
+    public function __construct(QuizRepository $quizRepository, QuizQuestionRepository $quizQuestionRepository, QuizQuestionOptionRepository $quizQuestionOptionRepository, UserRepository $userRepository)
     {
         $this->quizRepository = $quizRepository;
         $this->quizQuestionRepository = $quizQuestionRepository;
         $this->quizQuestionOptionRepository = $quizQuestionOptionRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function get($quiz)
@@ -102,6 +107,13 @@ class QuizServiceImpl implements QuizService
         }
 
         $success = $this->quizRepository->publish($quiz);
+
+        if ($success) {
+            $usersForEmail = $this->userRepository->getUsersForEmail(Auth::user()->id);
+            if (! empty($usersForEmail)) {
+                dispatch(new SendQuizCreationgEmailJob($usersForEmail, $quiz));
+            }
+        }
 
         $redisData = [
             'created_by' => Auth::user()->id,

@@ -17,7 +17,7 @@ class QuizQuestionFactory extends Factory
     public function definition()
     {
         return [
-            'question' => fake()->name(), 
+            'question' => fake()->name(),
         ];
     }
 }
