@@ -49,6 +49,14 @@ php artisan test
 ```
 http://localhost:8080/api/
 
+7- For the application to be able to send emails you will have to run the queue manually
+```
+sh php.sh
+php artisan queue:work
+```
+8- To view the mailbox you can go to the following URL(port can be different)
+http://localhost:6082/
+
 
 ## API Docs
 
@@ -56,9 +64,3 @@ Following is the link to API Documentation of Quiz Builder App
 
 https://documenter.getpostman.com/view/23884862/2s847MrWKi
 
-
-## Demo
-
-Following is a video containing the demo of the REST Apis useage of quiz builder app
-
-https://drive.google.com/file/d/1yhw6JF7mjE8E_dl0xS1HKj1qHDcBmZQP/view?usp=sharing
