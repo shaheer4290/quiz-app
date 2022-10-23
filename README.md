@@ -8,6 +8,7 @@ Restful Apis to create a quiz bulder application
 - PHP 8.1.0
 - MySQL
 - Redis
+- MailHog
 
 ## Project Setup
 
